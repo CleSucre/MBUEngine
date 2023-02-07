@@ -1,0 +1,22 @@
+{
+    "name": "clesucre/mbuengine",
+    "description": "Collect datas on servers to share it with MBU anonymously.",
+    "license": "LGPL-3.0",
+    "autoload": {
+        "psr-4": {
+            "MBUEngine\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "CleSucre",
+            "email": "julien.thomas@plutonium.best"
+        }
+    ],
+    "require": {
+        "pocketmine/pocketmine-mp": "4.13.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.14.3"
+    }
+}
