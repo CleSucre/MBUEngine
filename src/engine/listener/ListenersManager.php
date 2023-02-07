@@ -35,7 +35,6 @@ class ListenersManager {
 	public function loadListeners() : void {
 		$pluginManager = $this->plugin->getServer()->getPluginManager();
 
-		$pluginManager->registerEvents(new PlayerWalkListener(), $this->plugin);
 		$pluginManager->registerEvents(new PlayerCreationListener(), $this->plugin);
 	}
 }
