@@ -7,3 +7,6 @@ composer.phar
 
 # Php-cs-fixer
 .php-cs-fixer.cache
+
+# Draw.io
+Diagram.drawio

@@ -23,17 +23,32 @@
 namespace engine\player;
 
 use engine\event\PlayerWalkEvent;
+use pocketmine\entity\Location;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\player\Player;
+use pocketmine\player\PlayerInfo;
+use pocketmine\Server;
 
 class CustomPlayer extends Player {
 	private const MOVES_PER_TICK = 2;
 	private const MOVE_BACKLOG_SIZE = 100 * self::MOVES_PER_TICK; //100 ticks backlog (5 seconds)
 	private float $lastTimeMovement = 0;
+    private Session $session;
 
-	/**
+    public function __construct(Server $server, NetworkSession $session, PlayerInfo $playerInfo, bool $authenticated, Location $spawnLocation, ?CompoundTag $namedtag) {
+        $this->session = new Session();
+        parent::__construct($server, $session, $playerInfo, $authenticated, $spawnLocation, $namedtag);
+    }
+
+    public function getSession() : Session {
+        return $this->session;
+    }
+
+    /**
 	 * Fires movement events and synchronizes player movement, every tick.
 	 */
 	protected function processMostRecentMovements() : void {
