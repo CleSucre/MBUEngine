@@ -59,7 +59,7 @@ class LanguageManager {
 		@mkdir($patch);
 		//TODO: let users edit language files without losing their changes
 		$this->plugin->saveResource(self::DIRECTORY_NAME . "/fra.json", true);
-        $this->plugin->saveResource(self::DIRECTORY_NAME . "/eng.json", true);
+		$this->plugin->saveResource(self::DIRECTORY_NAME . "/eng.json", true);
 		// scan the DIRECTORY_NAME folder for languages files and read them
 		foreach (MixedLanguage::getLanguageList($patch) as $code => $langName) {
 			$this->languages[$code] = new MixedLanguage($code, $patch, self::DEFAULT_LANG);

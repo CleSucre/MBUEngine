@@ -20,33 +20,14 @@
  *
  */
 
-namespace engine\system\systems;
+namespace engine\listener;
 
-use engine\Main;
+use engine\player\CustomPlayer;
+use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerCreationEvent;
 
-abstract class SystemBase {
-	protected Main $plugin;
-	private bool $isEnabled = false;
-
-	public function __construct(Main $plugin) {
-		$this->plugin = $plugin;
-	}
-
-	public function enable() : void {
-		$this->isEnabled = true;
-	}
-
-	public function disable() : void {
-		$this->isEnabled = false;
-	}
-
-	public function isEnabled() : bool {
-		return $this->isEnabled;
-	}
-
-	abstract function load() : bool;
-
-	public function getPlugin() : Main {
-		return $this->plugin;
+class PlayerCreationListener implements Listener {
+	public function onPlayerCreation(PlayerCreationEvent $event) {
+		$event->setPlayerClass(CustomPlayer::class);
 	}
 }

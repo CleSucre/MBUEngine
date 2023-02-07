@@ -42,13 +42,14 @@ class Settings {
 
 	public function setupSystemSettings(SystemBase $system) : void {
 		switch (get_class($system)) {
-            case AntiCheatSystem::class:
+			case AntiCheatSystem::class:
 				if (!$this->anti_cheat->get("enabled")) {
 					// is disabled by default
 					break;
 				}
 				$system->enable();
 				//TODO: custom settings for the system
+				$system->setWhiteListPermisison($this->anti_cheat->get("whitelist-permission"));
 				break;
 		}
 	}

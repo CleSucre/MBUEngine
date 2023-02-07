@@ -28,7 +28,6 @@ use const pocketmine\LOCALE_DATA_PATH;
 use pocketmine\utils\Utils;
 
 class MixedLanguage extends Language {
-
 	/**
 	 * @throws LanguageNotFoundException
 	 */

@@ -23,6 +23,7 @@
 namespace engine;
 
 use engine\lang\LanguageManager;
+use engine\listener\ListenersManager;
 use engine\system\SystemsManager;
 use engine\utils\Settings;
 use pocketmine\plugin\PluginBase;
@@ -33,16 +34,18 @@ class Main extends PluginBase {
 	private LanguageManager $languageManager;
 	private Settings $settings;
 	private SystemsManager $systemsManager;
+	private ListenersManager $listenersManager;
 
-    /**
-     * @throws ReflectionException
-     */
-    protected function onEnable() : void {
+	/**
+	 * @throws ReflectionException
+	 */
+	protected function onEnable() : void {
 		// simply load everything
 		self::$instance = $this;
 		$this->languageManager = new LanguageManager($this);
 		$this->settings = new Settings($this);
 		$this->systemsManager = new SystemsManager($this);
+		$this->listenersManager = new ListenersManager($this);
 	}
 
 	public static function getInstance() : self {

@@ -23,36 +23,38 @@
 namespace engine\system\systems\anticheat;
 
 use engine\Main;
-use engine\system\systems\anticheat\cheats\BaseCheat;
+use engine\player\HackingPointsCache;
 use engine\system\systems\SystemBase;
+use pocketmine\player\Player;
 
 class AntiCheatSystem extends SystemBase {
-	/** @var BaseCheat[] */
-	private array $hacks = [];
+	/** @var HackingPointsCache[][] */
+	private array $hackingPoints = [];
+	private string $whiteListPermisison;
 
 	public function __construct(Main $plugin) {
 		parent::__construct($plugin);
 	}
 
-	public function register(BaseCheat $anti) : bool {
-		if (isset($this->hacks[$anti::getName()])) {
-			$this->plugin->getLogger()->error("AntiCheat with name " . $anti::getName() . " already exists!");
-
-			return false;
-		}
-		$this->plugin->getLogger()->debug("Registered AntiCheat " . $anti::getName());
-		$this->hacks[$anti::getName()] = $anti;
-
-		return true;
+	public function getWhiteListPermisison() : string {
+		return $this->whiteListPermisison;
 	}
 
-	public function load() : bool {
-		if (!$this->isEnabled()) {
-			return false;
+	public function setWhiteListPermisison(string $whiteListPermisison) : void {
+		$this->whiteListPermisison = $whiteListPermisison;
+	}
+
+	public function addHackingPoints(Player $player, string $cheatId, int $maxPoint, int $period) : bool {
+		$cache = $this->hackingPoints[$player->getXuid()][$cheatId] = $this->hackingPoints[$player->getXuid()][$cheatId] ?? new HackingPointsCache();
+		$cache->add();
+		if ($cache->getPointsFrom($period) >= $maxPoint) {
+			return true;
 		}
-		//$this->register(new AntiSpeedHack($this->plugin, $this->plugin->getSettings()->getAntiCheatData(AntiSpeedHack::getName())));
-		//$this->register(new AntiAirJump($this->plugin, $this->plugin->getSettings()->getAntiCheatData(AntiAirJump::getName())));
-		//$this->register(new AntiNoClip($this->plugin, $this->plugin->getSettings()->getAntiCheatData(AntiNoClip::getName())));
+
+		return false;
+	}
+
+	function load() : bool {
 		return true;
 	}
 }

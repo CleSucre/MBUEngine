@@ -20,33 +20,22 @@
  *
  */
 
-namespace engine\system\systems;
+namespace engine\listener;
 
 use engine\Main;
 
-abstract class SystemBase {
-	protected Main $plugin;
-	private bool $isEnabled = false;
+class ListenersManager {
+	private Main $plugin;
 
 	public function __construct(Main $plugin) {
 		$this->plugin = $plugin;
+		$this->loadListeners();
 	}
 
-	public function enable() : void {
-		$this->isEnabled = true;
-	}
+	public function loadListeners() : void {
+		$pluginManager = $this->plugin->getServer()->getPluginManager();
 
-	public function disable() : void {
-		$this->isEnabled = false;
-	}
-
-	public function isEnabled() : bool {
-		return $this->isEnabled;
-	}
-
-	abstract function load() : bool;
-
-	public function getPlugin() : Main {
-		return $this->plugin;
+		$pluginManager->registerEvents(new PlayerWalkListener(), $this->plugin);
+		$pluginManager->registerEvents(new PlayerCreationListener(), $this->plugin);
 	}
 }

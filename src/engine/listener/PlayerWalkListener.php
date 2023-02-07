@@ -20,35 +20,16 @@
  *
  */
 
-namespace engine\system\systems\anticheat\cheats;
+namespace engine\listener;
 
+use engine\event\PlayerWalkEvent;
 use engine\Main;
-use Exception;
-use pocketmine\player\Player;
+use engine\system\systems\anticheat\cheats\CheatNoClip;
+use pocketmine\event\Listener;
 
-abstract class BaseCheat {
-	private Main $plugin;
-	public array $data;
-
-	public function __construct(Main $plugin, array $data) {
-		$this->plugin = $plugin;
-		$this->data = $data;
+class PlayerWalkListener implements Listener {
+	public function onPlayerWalk(PlayerWalkEvent $event) : void {
+		Main::getInstance()->getAntiCheatManager()->getAntiCheat(CheatNoClip::getName())
+			->checkHack($event->getPlayer(), $event->getFrom(), $event->getTo());
 	}
-
-	public function checkHack(Player $player, ...$datas) : bool {
-		return false;
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function executeActions(Player $player, self $class) : void {
-
-	}
-
-	public function getPlugin() : Main {
-		return $this->plugin;
-	}
-
-	abstract static public function getName() : string;
 }
