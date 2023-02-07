@@ -29,18 +29,9 @@ use pocketmine\player\Player;
 class AntiCheatSystem extends SystemBase {
 	/** @var HackingPointsCache[][] */
 	private array $hackingPoints = [];
-	private string $whiteListPermisison;
 
 	public function __construct(Main $plugin) {
 		parent::__construct($plugin);
-	}
-
-	public function getWhiteListPermisison() : string {
-		return $this->whiteListPermisison;
-	}
-
-	public function setWhiteListPermisison(string $whiteListPermisison) : void {
-		$this->whiteListPermisison = $whiteListPermisison;
 	}
 
 	public function addHackingPoints(Player $player, string $cheatId, int $maxPoint, int $period) : bool {

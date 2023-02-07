@@ -49,7 +49,6 @@ class Settings {
 				}
 				$system->enable();
 				//TODO: custom settings for the system
-				$system->setWhiteListPermisison($this->anti_cheat->get("whitelist-permission"));
 				break;
 		}
 	}
