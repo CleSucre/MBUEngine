@@ -24,13 +24,10 @@ namespace engine\lang;
 
 use pocketmine\lang\Language;
 use pocketmine\lang\LanguageNotFoundException;
-use pocketmine\utils\Utils;
 use const pocketmine\LOCALE_DATA_PATH;
+use pocketmine\utils\Utils;
 
 class MixedLanguage extends Language {
-	public const LANGUAGE_MAP = [
-		"fr" => "fra",
-	];
 
 	/**
 	 * @throws LanguageNotFoundException
@@ -59,7 +56,7 @@ class MixedLanguage extends Language {
 				return $strings;
 			}
 		}
-		$file = $path . self::LANGUAGE_MAP[$languageCode] . ".ini";
+		$file = $path . DIRECTORY_SEPARATOR . $languageCode . ".ini";
 		if (file_exists($file)) {
 			$strings = array_map('stripcslashes', Utils::assumeNotFalse(parse_ini_file($file, false, INI_SCANNER_RAW), "Missing or inaccessible required resource files"));
 			if (count($strings) > 0) {

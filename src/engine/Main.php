@@ -23,27 +23,41 @@
 namespace engine;
 
 use engine\lang\LanguageManager;
+use engine\system\SystemsManager;
+use engine\utils\Settings;
 use pocketmine\plugin\PluginBase;
+use ReflectionException;
 
 class Main extends PluginBase {
 	private static self $instance;
-    private LanguageManager $languageManager;
+	private LanguageManager $languageManager;
+	private Settings $settings;
+	private SystemsManager $systemsManager;
 
-	protected function onEnable() : void {
-        // simply load everything
+    /**
+     * @throws ReflectionException
+     */
+    protected function onEnable() : void {
+		// simply load everything
 		self::$instance = $this;
-        $this->languageManager = new LanguageManager($this);
+		$this->languageManager = new LanguageManager($this);
+		$this->settings = new Settings($this);
+		$this->systemsManager = new SystemsManager($this);
 	}
 
 	public static function getInstance() : self {
 		return self::$instance;
 	}
 
-	public function getAntiCheatManager() : AntiCheatManager {
-		return $this->antiCheatManager;
+	public function getLanguageManager() : LanguageManager {
+		return $this->languageManager;
 	}
 
-    public function getLanguageManager() : LanguageManager {
-        return $this->languageManager;
-    }
+	public function getSettings() : Settings {
+		return $this->settings;
+	}
+
+	public function getSystemsManager() : SystemsManager {
+		return $this->systemsManager;
+	}
 }
