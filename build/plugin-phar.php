@@ -24,73 +24,46 @@ declare(strict_types=1);
 namespace build\plugin_phar;
 
 use Generator;
-use function array_map;
-use function count;
-use function dirname;
-use function file_exists;
-use function getcwd;
-use function implode;
-use function ini_get;
-use function microtime;
-use function preg_quote;
-use function realpath;
-use function round;
-use function rtrim;
-use function sprintf;
-use function str_replace;
-use function unlink;
-use const PHP_EOL;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require \dirname(__DIR__) . '/vendor/autoload.php';
 
 const PLUGIN_NAME = 'MBUEngine';
 
-/**
- * @param array $strings
- * @param string $delim
- * @return array
- */
-function preg_quote_array(array $strings, string $delim): array{
-	return array_map(
-		function(string $str) use ($delim): string{
-			return preg_quote($str, $delim);
+function preg_quote_array(array $strings, string $delim) : array {
+	return \array_map(
+		function (string $str) use ($delim) : string {
+			return \preg_quote($str, $delim);
 		},
 		$strings
 	);
 }
 
 /**
- * @param string $pharPath
- * @param string $basePath
  * @param string[] $includedPaths
- * @param array $metadata
- * @param string $stub
- * @param int $signatureAlgo
- * @param int|null $compression
  *
  * @phpstan-param array<string, mixed> $metadata
  *
  * @return Generator|string[]
  */
-function buildPhar(string $pharPath, string $basePath, array $includedPaths, array $files, string $stub, int $signatureAlgo = \Phar::SHA1, ?int $compression = null): array|Generator{
-	$basePath = rtrim(str_replace("/", DIRECTORY_SEPARATOR, $basePath), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-	$includedPaths = array_map(function(string $path) : string{
-		return rtrim(str_replace("/", DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+function buildPhar(string $pharPath, string $basePath, array $includedPaths, array $files, string $stub, int $signatureAlgo = \Phar::SHA1, ?int $compression = null) : array|Generator {
+	$basePath = \rtrim(\str_replace("/", DIRECTORY_SEPARATOR, $basePath), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+	$includedPaths = \array_map(function (string $path) : string {
+		return \rtrim(\str_replace("/", DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 	}, $includedPaths);
 	yield "Creating output file $pharPath";
-	if(file_exists($pharPath)){
+	if (\file_exists($pharPath)) {
 		yield "Phar file already exists, overwriting...";
-		try{
+		try {
 			\Phar::unlinkArchive($pharPath);
-		}catch(\PharException $e){
+		} catch (\PharException $e) {
 			//unlinkArchive() doesn't like dodgy phars
-			unlink($pharPath);
+			\unlink($pharPath);
 		}
 	}
 
 	yield "Adding files...";
 
-	$start = microtime(true);
+	$start = \microtime(true);
 	$phar = new \Phar($pharPath);
 	$phar->setStub($stub);
 	$phar->setSignatureAlgorithm($signatureAlgo);
@@ -102,7 +75,7 @@ function buildPhar(string $pharPath, string $basePath, array $includedPaths, arr
 
 	//If paths contain any of these, they will be excluded
 	$excludedSubstrings = preg_quote_array([
-		realpath($pharPath), //don't add the phar to itself
+		\realpath($pharPath), //don't add the phar to itself
 	], '/');
 
 	$folderPatterns = preg_quote_array([
@@ -111,48 +84,49 @@ function buildPhar(string $pharPath, string $basePath, array $includedPaths, arr
 	], '/');
 
 	//Only exclude these within the basedir, otherwise the project won't get built if it itself is in a directory that matches these patterns
-	$basePattern = preg_quote(rtrim($basePath, DIRECTORY_SEPARATOR), '/');
-	foreach($folderPatterns as $p){
+	$basePattern = \preg_quote(\rtrim($basePath, DIRECTORY_SEPARATOR), '/');
+	foreach ($folderPatterns as $p) {
 		$excludedSubstrings[] = $basePattern . '.*' . $p;
 	}
 
-	$regex = sprintf('/^(?!.*(%s))^%s(%s).*/i',
-		implode('|', $excludedSubstrings), //String may not contain any of these substrings
-		preg_quote($basePath, '/'), //String must start with this path...
-		implode('|', preg_quote_array($includedPaths, '/')) //... and must be followed by one of these relative paths, if any were specified. If none, this will produce a null capturing group which will allow anything.
+	$regex = \sprintf(
+		'/^(?!.*(%s))^%s(%s).*/i',
+		\implode('|', $excludedSubstrings), //String may not contain any of these substrings
+		\preg_quote($basePath, '/'), //String must start with this path...
+		\implode('|', preg_quote_array($includedPaths, '/')) //... and must be followed by one of these relative paths, if any were specified. If none, this will produce a null capturing group which will allow anything.
 	);
 
 	$directory = new \RecursiveDirectoryIterator($basePath, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::CURRENT_AS_PATHNAME); //can't use fileinfo because of symlinks
 	$iterator = new \RecursiveIteratorIterator($directory);
 	$regexIterator = new \RegexIterator($iterator, $regex);
 
-	$count = count($phar->buildFromIterator($regexIterator, $basePath));
+	$count = \count($phar->buildFromIterator($regexIterator, $basePath));
 
 	yield "Added $count files";
 
-	if($compression !== null){
+	if ($compression !== null) {
 		yield "Compressing files...";
 		$phar->compressFiles($compression);
 		yield "Finished compression";
 	}
 	$phar->stopBuffering();
 
-	yield "Done in " . round(microtime(true) - $start, 3) . "s";
+	yield "Done in " . \round(\microtime(true) - $start, 3) . "s";
 }
 
-function main() : void{
-	if(ini_get("phar.readonly") == 1){
-		echo "Set phar.readonly to 0 with -dphar.readonly=0" . PHP_EOL;
+function main() : void {
+	if (\ini_get("phar.readonly") == 1) {
+		echo "Set phar.readonly to 0 with -dphar.readonly=0" . \PHP_EOL;
 		exit(1);
 	}
-	if(file_exists(dirname(__DIR__) . '/vendor/phpunit')){
-		echo "Remove Composer dev dependencies before building (composer install --no-dev)" . PHP_EOL;
+	if (\file_exists(\dirname(__DIR__) . '/vendor/phpunit')) {
+		echo "Remove Composer dev dependencies before building (composer install --no-dev)" . \PHP_EOL;
 		exit(1);
 	}
 
-	foreach(buildPhar(
-		getcwd() . DIRECTORY_SEPARATOR . PLUGIN_NAME . ".phar",
-		dirname(__DIR__) . DIRECTORY_SEPARATOR,
+	foreach (buildPhar(
+		\getcwd() . DIRECTORY_SEPARATOR . PLUGIN_NAME . ".phar",
+		\dirname(__DIR__) . DIRECTORY_SEPARATOR,
 		[
 			'resources',
 			'src'
@@ -173,11 +147,10 @@ if(!is_readable($tmpDir) or !is_writable($tmpDir)){
 
 __HALT_COMPILER();
 STUB,
-
 		\Phar::SHA1,
 		\Phar::GZ
 	) as $line) {
-		echo $line . PHP_EOL;
+		echo $line . \PHP_EOL;
 	}
 }
 
