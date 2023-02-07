@@ -2,6 +2,12 @@
     "name": "clesucre/mbuengine",
     "description": "Collect datas on servers to share it with MBU anonymously.",
     "license": "LGPL-3.0",
+    "scripts": {
+        "make-plugin": [
+            "@composer install --no-dev --classmap-authoritative --ignore-platform-reqs",
+            "@php -dphar.readonly=0 build/plugin-phar.php"
+        ]
+    },
     "autoload": {
         "psr-4": {
             "MBUEngine\\": "src/"
