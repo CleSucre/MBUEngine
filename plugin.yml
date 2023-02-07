@@ -1,0 +1,7 @@
+name: MBUEngine
+version: 0.0.1-BETA
+api: ["4.13.0"]
+main: engine\Main
+
+authors:
+  - CleSucre

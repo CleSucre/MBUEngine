@@ -1,2 +1,2 @@
-# MBU-Stats
- Collect datas on servers to share it with MBU anonymously.
+# MBUEngine
+Minecraft Bedrock Union plugin for P2P in the Minecraft Bedrock community
