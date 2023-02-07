@@ -20,7 +20,7 @@
  *
  */
 
-namespace stats;
+namespace engine;
 
 use pocketmine\plugin\PluginBase;
 

@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MBUEngine\\": "src/"
+            "engine\\": "src/engine"
         }
     },
     "authors": [
