@@ -20,30 +20,14 @@
  *
  */
 
-namespace engine;
+namespace engine\lang;
 
-use engine\lang\LanguageManager;
-use pocketmine\plugin\PluginBase;
-
-class Main extends PluginBase {
-	private static self $instance;
-    private LanguageManager $languageManager;
-
-	protected function onEnable() : void {
-        // simply load everything
-		self::$instance = $this;
-        $this->languageManager = new LanguageManager($this);
-	}
-
-	public static function getInstance() : self {
-		return self::$instance;
-	}
-
-	public function getAntiCheatManager() : AntiCheatManager {
-		return $this->antiCheatManager;
-	}
-
-    public function getLanguageManager() : LanguageManager {
-        return $this->languageManager;
-    }
+/**
+ * This class contains constants for all the translations known of the MBUEngine.
+ * This class is generated automatically, do NOT modify it by hand.
+ *
+ * @internal
+ */
+final class KnownTranslationKeys {
+	public const BACK = "back";
 }
