@@ -23,7 +23,6 @@
 namespace engine\system\systems\anticheat;
 
 use engine\Main;
-use engine\player\HackingPointsCache;
 use engine\system\systems\SystemBase;
 use pocketmine\player\Player;
 
